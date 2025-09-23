@@ -1,12 +1,14 @@
 package com.identity_service.service;
 
-import com.identity_service.dtos.LoginRequest;
-import com.identity_service.dtos.TokenResponse;
+import com.identity_service.dtos.LoginRequestDTO;
+import com.identity_service.dtos.RequestTokenDTO;
 import com.identity_service.model.UserEntity;
-import com.identity_service.repository.UserRepository;
-import com.identity_service.security.JwtService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -14,29 +16,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
+    @Autowired
+    private  final AuthenticationManager authenticationManager;
 
 
+    public RequestTokenDTO login(LoginRequestDTO loginRequestDTO) {
 
-    public TokenResponse login(@Valid LoginRequest loginRequest){
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(
+                        loginRequestDTO.email(),
+                        loginRequestDTO.password()
+                );
 
-        // Aquí validamos credenciales con Spring Security
-//        Authentication authentication = authManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.getEmail(),
-//                        request.getPassword()
-//                )
-//        );
+        Authentication authResult = authenticationManager.authenticate(authInputToken);
+        SecurityContextHolder.getContext().setAuthentication(authResult);
 
-        UserEntity userEntity = userRepository.findUserByEmail(loginRequest.email())
-                .orElseThrow(()-> new RuntimeException("El usuario no existe"));
+        UserEntity user = (UserEntity) authResult.getPrincipal();
 
-
-        if (!userEntity.getPassword().equals(loginRequest.password())){
-            throw new RuntimeException("La contraseña es incorrecta");
-        }
-
-        return new TokenResponse(jwtService.generateToken(userEntity));
+        return new RequestTokenDTO(user.getId(), user.getEmail(),user.getUserType());
     }
 }

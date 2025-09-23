@@ -27,7 +27,6 @@ public class UserService {
 
         userRepository.save(userEntity);
         return true;
-        //Debemos completar add en service y controller porqeu que pasa cuando el usuario no existe pero no se agrega? no lo sabemos cierto
     }
 
 

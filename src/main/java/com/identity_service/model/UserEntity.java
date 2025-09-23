@@ -1,5 +1,6 @@
 package com.identity_service.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,32 +17,31 @@ import java.util.Collections;
 
 
 @Entity
-@Getter
-@Setter
 @Table(name = " \"user\"")
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class UserEntity implements UserDetails {
+
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     @Setter(AccessLevel.NONE)
     private int id;
 
-    @NotBlank(message = "El nombre llega nullo vacio a userEntity")
+    @NotBlank(message = "No se ingreso el nombre")
     private String name;
 
 
-    @NotNull(message = "DNI llega vacio a userEntity")
+    @NotNull(message = "No se ingreso el DNI")
     private Integer dni;
 
-    @NotBlank(message = "EMail llega vacio a userEntity")
+    @NotBlank(message = "No se ingreso el email")
     private String email;
 
-    @NotBlank(message = "Contraseña no puede estar vacian en userEntity")
+    @NotBlank(message = "NO se ingreso ninguna contraseña")
     private String password;
 
 
-    @NotNull(message = "el tipo de usuario esta llegando vacio a userEntity")
+    @NotNull(message = "No se igreso ningun tipo de usuario")
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "users_types")
     private UsersTypes userType;
@@ -52,12 +52,14 @@ public class UserEntity implements UserDetails {
         this.dni = dni;
         this.email =email;
         this.password = password;
-        this.userType = null;
+        this.userType = UsersTypes.EMPLOYEE;
         this.stateLogin = false;
     }
 
 
-    //para decidir qué puede hacer un usuario una vez autenticado.
+
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -65,7 +67,6 @@ public class UserEntity implements UserDetails {
                 new SimpleGrantedAuthority("ROLE_" + this.userType);
 
         return Collections.singletonList(authority);
-
     }
 
     @Override

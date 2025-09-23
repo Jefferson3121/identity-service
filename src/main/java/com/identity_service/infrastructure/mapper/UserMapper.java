@@ -11,16 +11,12 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE
-            ) // ignora automáticamente lo que no mapees)
+            )
 public interface UserMapper {
 
-
    UserEntity toUserEntity(UserRequestDTO userRequestDTO);
-
 
    UserResponseDTO toUserResponseDTO(UserEntity userEntity);
 
    List<UserResponseDTO> toUserResponseDTOList(List<UserEntity> userEntities);
-
-
 }

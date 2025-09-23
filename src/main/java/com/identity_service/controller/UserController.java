@@ -1,6 +1,6 @@
 package com.identity_service.controller;
 
-import com.identity_service.dtos.ChangeEmailRequest;
+import com.identity_service.dtos.ChangeEmailRequestDTO;
 import com.identity_service.dtos.ChangePasswordRequestDTO;
 import com.identity_service.dtos.UserRequestDTO;
 import com.identity_service.dtos.UserResponseDTO;
@@ -34,9 +34,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> addUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
 
-        if (userRequestDTO.dni() == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("NO hay dni");
-        }
         boolean created = userService.addUser(userMapper.toUserEntity(userRequestDTO));
 
         if (!created) {
@@ -63,7 +60,6 @@ public class UserController {
 
     @PreAuthorize(("hasRole('ADMIN')"))
     @GetMapping("/all")
-    //@Valid @NotBlank @RequestParam String luzVerde
     public ResponseEntity<List<UserResponseDTO>> getUsers(){
         List<UserResponseDTO> users = userService.getAllUsers();
 
@@ -72,14 +68,13 @@ public class UserController {
         }
 
         return ResponseEntity.ok(users);
-
     }
 
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser(@Valid @NotNull @RequestParam Integer dni){
+    public ResponseEntity<?> deleteUser(@Valid  @NotNull @RequestParam Integer dni){
 
         String token = "admin";
 
@@ -100,13 +95,13 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @PatchMapping("/change-email")
-    public ResponseEntity<String> changeEmail(@RequestBody ChangeEmailRequest change){
+    public ResponseEntity<String> changeEmail(@RequestBody ChangeEmailRequestDTO change){
 
         if (userService.changeEmail(change.currentEmail(), change.newEmail(),change.password())){
             return ResponseEntity.status(HttpStatus.OK).body("Email modificada correctamente");
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("NO se pudo cambiar el email");
+        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("No se pudo cambiar el email");
     }
 
 

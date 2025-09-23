@@ -1,9 +1,9 @@
 package com.identity_service.controller;
 
-
-import com.identity_service.dtos.LoginRequest;
-import com.identity_service.dtos.TokenResponse;
+import com.identity_service.dtos.LoginRequestDTO;
+import com.identity_service.dtos.TokenResponseDTO;
 import com.identity_service.service.AuthService;
+import com.identity_service.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
+    public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+
+       String token = jwtService.generateToken( authService.login(loginRequestDTO));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new TokenResponseDTO(token));
     }
 }
