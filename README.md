@@ -16,7 +16,6 @@ Este servicio permite registrar nuevos usuarios, iniciar sesión, modificar dato
 - Lombok
 - MapStruct
 
-> 💡 *Nota:* Aunque Lombok y MapStruct son librerías pequeñas, son esenciales para reducir el código repetitivo y mejorar la legibilidad, así que sí vale la pena mencionarlas.
 
 ## 📦 Requisitos previos
 
