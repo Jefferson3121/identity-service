@@ -63,7 +63,7 @@ public class UserService {
                 .map(userEntity -> {
                     if (!userEntity.getPassword().equalsIgnoreCase(password)){
                         return false;
-                        //Se debe lanzar una excepcion porque le metodo es boolean y el cliente no sabe porque fallo
+                        //Se debe lanzar una excepcion porque el metodo es boolean y el cliente no sabe porque fallo
                     }
 
                     userEntity.setEmail(newEmail);
@@ -81,7 +81,6 @@ public class UserService {
                 .map(userEntity -> {
                     if (!userEntity.getPassword().equalsIgnoreCase(currentPasswor)){
                         return false;
-                        //Quiero lanzar una excepcion pero no se como ni cual
                     }
 
                     userEntity.setPassword(newPassword);

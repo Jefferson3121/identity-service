@@ -54,7 +54,7 @@ public class UserController {
 
        return userService.getUserByEmail(email)
                 .map(userResponseDTO -> ResponseEntity.ok(userResponseDTO))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 
@@ -75,14 +75,6 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@Valid  @NotNull @RequestParam Integer dni){
-
-        String token = "admin";
-
-        if ( !token.equalsIgnoreCase("admin")){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Los empleados no puden eliminar un usuario ( no tiene autorizacion) ");
-           // return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            //lanzar excepcion si es buena ide ovbio
-        }
 
         if (userService.deleteUser(dni)){
             return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado");
