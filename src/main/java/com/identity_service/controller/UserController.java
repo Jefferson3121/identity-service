@@ -1,12 +1,10 @@
 package com.identity_service.controller;
 
-import com.identity_service.dtos.ChangeEmailRequestDTO;
-import com.identity_service.dtos.ChangePasswordRequestDTO;
-import com.identity_service.dtos.UserRequestDTO;
-import com.identity_service.dtos.UserResponseDTO;
+import com.identity_service.dto.ChangeEmailRequestDTO;
+import com.identity_service.dto.ChangePasswordRequestDTO;
+import com.identity_service.dto.UserResponseDTO;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.service.UserService;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -26,25 +24,6 @@ public class UserController {
     public  UserController(UserService userService, UserMapper userMapper){
         this.userService = userService;
         this.userMapper = userMapper;
-    }
-
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @Transactional
-    @PostMapping
-    public ResponseEntity<?> addUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-
-        boolean created = userService.addUser(userMapper.toUserEntity(userRequestDTO));
-
-        if (!created) {
-            return ResponseEntity.
-                    status(HttpStatus.CONFLICT)
-                    .body("El usario ya existe");
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body("Usario creado correctamente");
     }
 
 
@@ -79,9 +58,7 @@ public class UserController {
         if (userService.deleteUser(dni)){
             return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado");
         }
-
-        //Por ahora solo un error del servidor desconocido
-        return ResponseEntity.internalServerError().body("Erro desconocido__");
+        return ResponseEntity.internalServerError().body("Error desconocido__");
     }
 
 
@@ -107,6 +84,12 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("La contraseña no se modifico");
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/enable-user")
+    public ResponseEntity<String> enableUser(@RequestParam String email){
+
+        userService.enableUser(email);
+        return ResponseEntity.status(HttpStatus.OK).body("Usuario habilitado");
+    }
 }
-
-

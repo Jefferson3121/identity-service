@@ -1,4 +1,4 @@
-package com.identity_service.dtos;
+package com.identity_service.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

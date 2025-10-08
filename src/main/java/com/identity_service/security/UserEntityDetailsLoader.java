@@ -1,19 +1,20 @@
-package com.identity_service.service;
+package com.identity_service.security;
 
 import com.identity_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+
+@Component
 @RequiredArgsConstructor
-@Primary
-public class UserEntityDetailsService implements UserDetailsService {
+public class UserEntityDetailsLoader implements UserDetailsService {
 
     private final UserRepository userRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

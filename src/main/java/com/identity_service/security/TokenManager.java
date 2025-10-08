@@ -1,23 +1,21 @@
-package com.identity_service.service;
+package com.identity_service.security;
 
-import com.identity_service.dtos.RequestTokenDTO;
-import com.identity_service.model.UserEntity;
+import com.identity_service.dto.RequestTokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys; // Import nuevo
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-@Service
-public class JwtService {
+@Component
+public class TokenManager {
 
     @Value("${jwt.secret}")
     private String secretBase64;
@@ -39,12 +37,7 @@ public class JwtService {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMs);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", requestTokenDTO.id());
-        claims.put("roles", requestTokenDTO.userType());
-
         return Jwts.builder()
-                .setClaims(claims)
                 .setSubject(requestTokenDTO.email())
                 .setIssuer(issuer)
                 .setIssuedAt(now)
@@ -62,6 +55,7 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
 
     public String extractEmail(String token) {
         return Jwts.parserBuilder()

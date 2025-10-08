@@ -1,19 +1,21 @@
 package com.identity_service.security;
 
 
-import com.identity_service.component.JwtAuthenticationFilter;
-import com.identity_service.repository.UserRepository;
-import com.identity_service.service.UserEntityDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
 
 @Configuration
 @EnableWebSecurity
@@ -28,8 +30,18 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Desactiva CSRF  para APIs REST
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth").permitAll()
+                        .requestMatchers("/auth/register-admin", "/auth/login").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.getWriter().write("Unauthorized: " + authException.getMessage());
+                    })
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.getWriter().write("Forbidden: " + accessDeniedException.getMessage());
+                    })
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -37,13 +49,12 @@ public class SecurityConfig {
 
 
     @Bean
-    @Primary
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return new UserEntityDetailsService(userRepository);
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

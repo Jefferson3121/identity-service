@@ -1,11 +1,14 @@
 package com.identity_service.service;
 
-import com.identity_service.dtos.UserResponseDTO;
+import com.identity_service.dto.UserResponseDTO;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.model.UserEntity;
 import com.identity_service.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,17 +21,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-
-    @Transactional
-    public boolean addUser(UserEntity userEntity){
-        if (userRepository.existsByEmail(userEntity.getUsername())){
-            return false;
-        }
-
-        userRepository.save(userEntity);
-        return true;
-    }
-
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserResponseDTO> getAllUsers(){
         return   userMapper.toUserResponseDTOList(userRepository.findAll());
@@ -40,7 +33,6 @@ public class UserService {
         return userRepository.findUserByEmail(email)
                 .map(userEntity -> userMapper.toUserResponseDTO(userEntity))
                 .or(()-> Optional.empty());
-        //ojito aqui
     }
 
 
@@ -59,43 +51,39 @@ public class UserService {
     @Transactional
     public boolean changeEmail(String currentEmail, String newEmail,String password) {
 
-        return userRepository.findUserByEmail(currentEmail)
-                .map(userEntity -> {
-                    if (!userEntity.getPassword().equalsIgnoreCase(password)){
-                        return false;
-                        //Se debe lanzar una excepcion porque el metodo es boolean y el cliente no sabe porque fallo
-                    }
+        UserEntity userEntity = userRepository.findUserByEmail(currentEmail).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-                    userEntity.setEmail(newEmail);
-                    return true;
-                })
-                .orElse(false);
+        if (!passwordEncoder.matches(password, userEntity.getPassword())){
+            throw new BadCredentialsException("Contraseña invalida");
+        }
+
+        userEntity.setEmail(newEmail);
+        userRepository.save(userEntity);
+        return true;
     }
-
 
 
     @Transactional
     public boolean changePassword(String email, String currentPasswor,String newPassword){
 
-        return  userRepository.findUserByEmail(email)
-                .map(userEntity -> {
-                    if (!userEntity.getPassword().equalsIgnoreCase(currentPasswor)){
-                        return false;
-                    }
+        UserEntity userEntity = userRepository.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-                    userEntity.setPassword(newPassword);
-                    return true;
-                }).orElse(false);
+        if (!passwordEncoder.matches(currentPasswor, userEntity.getPassword())){
+            throw new BadCredentialsException("Contraseña invalida");
+        }
+
+        userEntity.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userEntity);
+        return true;
     }
 
 
+    @Transactional
+    public void enableUser(String email){
 
+        UserEntity userEntity = userRepository.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-
-
-
-
-
-
-
+        userEntity.setEnabled(true);
+        userRepository.save(userEntity);
+    }
 }
