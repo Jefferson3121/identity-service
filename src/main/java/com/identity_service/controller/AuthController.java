@@ -55,9 +55,12 @@ public class AuthController {
     @PostMapping("/register-employee")
     public ResponseEntity<String> registerEmployee(@Valid @RequestBody UserRequestDTO userRequestDTO){
 
-        TokenResponseDTO token =  authService.register(userMapper.toUserEntity(userRequestDTO));
+        UserEntity user = userMapper.toUserEntity(userRequestDTO);
+        user.setUserType(UsersTypes.EMPLOYEE);
 
-        return ResponseEntity.ok("Usuario habilitado con exito");
+        TokenResponseDTO token =  authService.register(user);
+
+        return ResponseEntity.ok("Usuario registrado con exito");
 
     }
 }

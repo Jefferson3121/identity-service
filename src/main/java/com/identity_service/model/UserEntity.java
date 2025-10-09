@@ -40,7 +40,7 @@ public class UserEntity implements UserDetails {
 
 
 
-    @NotNull(message = "No se igreso ningun tipo de usuario")  @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "users_types")
     private UsersTypes userType;
     private boolean stateLogin;
@@ -51,7 +51,6 @@ public class UserEntity implements UserDetails {
         this.dni = dni;
         this.email =email;
         this.password = password;
-        this.userType = UsersTypes.EMPLOYEE;
         this.stateLogin = false;
         this.enabled = false;
 

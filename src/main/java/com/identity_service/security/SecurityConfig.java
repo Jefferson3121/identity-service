@@ -30,7 +30,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable()) // Desactiva CSRF  para APIs REST
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/register-admin", "/auth/login").permitAll()
+                        .requestMatchers("/auth/register-admin", "/auth/login", "/auth/register-employee").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

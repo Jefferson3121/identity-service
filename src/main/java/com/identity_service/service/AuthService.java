@@ -6,6 +6,7 @@ import com.identity_service.repository.UserRepository;
 import com.identity_service.security.TokenManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,8 +30,8 @@ public class AuthService {
     @Transactional
    public TokenResponseDTO register(UserEntity userEntity){
 
-        if (!userRepository.existsByEmail(userEntity.getEmail())){
-            throw new UsernameNotFoundException("Usuario con ese email no existe");
+        if (userRepository.existsByEmail(userEntity.getEmail())){
+            throw new DataIntegrityViolationException("Usuario ya registrado cn aterioridad");
         }
 
         String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
