@@ -7,11 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-
-    Integer deleteByDni( int dni);
-
+    Integer deleteByDni(int dni);
     Optional<UserEntity> findUserByEmail(String email);
-
     boolean existsByEmail(String email);
-
 }

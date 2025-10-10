@@ -51,6 +51,7 @@ public class UserEntity implements UserDetails {
         this.dni = dni;
         this.email =email;
         this.password = password;
+        this.userType = UsersTypes.EMPLOYEE;
         this.stateLogin = false;
         this.enabled = false;
 

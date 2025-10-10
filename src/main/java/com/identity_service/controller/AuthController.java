@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -39,13 +41,7 @@ public class AuthController {
     @PostMapping("/register-admin")
     public ResponseEntity<TokenResponseDTO> registerAdmin(@Valid @RequestBody UserRequestDTO userRequestDTO){
 
-
-
-        UserEntity user = userMapper.toUserEntity(userRequestDTO);
-        user.setUserType(UsersTypes.ADMIN);
-        user.setEnabled(true);
-
-       TokenResponseDTO token = authService.register(user);
+       TokenResponseDTO token = authService.registerAdmin(userRequestDTO);
 
        return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }
@@ -55,12 +51,11 @@ public class AuthController {
     @PostMapping("/register-employee")
     public ResponseEntity<String> registerEmployee(@Valid @RequestBody UserRequestDTO userRequestDTO){
 
-        UserEntity user = userMapper.toUserEntity(userRequestDTO);
-        user.setUserType(UsersTypes.EMPLOYEE);
+        Optional<TokenResponseDTO> token =  authService.register(userRequestDTO);
 
-        TokenResponseDTO token =  authService.register(user);
-
-        return ResponseEntity.ok("Usuario registrado con exito");
+        if (token.isEmpty()){
+            return ResponseEntity.ok("Usuario registrado con exito");
+        }
 
     }
 }
