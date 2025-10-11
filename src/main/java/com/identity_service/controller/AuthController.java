@@ -27,7 +27,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final TokenManager tokenManager;
-    private final UserMapper userMapper;
+
 
 
     @PostMapping("/login")
@@ -50,12 +50,7 @@ public class AuthController {
 
     @PostMapping("/register-employee")
     public ResponseEntity<String> registerEmployee(@Valid @RequestBody UserRequestDTO userRequestDTO){
-
-        Optional<TokenResponseDTO> token =  authService.register(userRequestDTO);
-
-        if (token.isEmpty()){
-            return ResponseEntity.ok("Usuario registrado con exito");
-        }
-
+        authService.registerEmployee(userRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Empleado registrado");
     }
 }

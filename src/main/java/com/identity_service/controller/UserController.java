@@ -53,12 +53,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteUser(@Valid  @NotNull @RequestParam Integer dni){
-
-        if (userService.deleteUser(dni)){
-            return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado");
-        }
-        return ResponseEntity.internalServerError().body("Error desconocido__");
+    public ResponseEntity<?> deleteUser(@PathVariable Integer dni){
+        userService.deleteUser(dni);
+        return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado");
     }
 
 

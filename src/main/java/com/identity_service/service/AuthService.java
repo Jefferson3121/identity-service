@@ -1,6 +1,7 @@
 package com.identity_service.service;
 
 import com.identity_service.dto.*;
+import com.identity_service.exceptions.UserAlreadyExistsException;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.model.UserEntity;
 import com.identity_service.model.UsersTypes;
@@ -48,14 +49,13 @@ public class AuthService {
 
 
    @Transactional
-   public boolean registerEmployee(UserRequestDTO userRequestDTO){
+   public void registerEmployee(UserRequestDTO userRequestDTO){
         UserEntity userEntity = userMapper.toUserEntity(userRequestDTO);
         userEntity.setUserType(UsersTypes.EMPLOYEE);
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
 
        try {
            userRepository.save(userEntity);
-           return true;
        } catch (DataIntegrityViolationException ex) {
            throw new UserAlreadyExistsException("Usuario ya registrado");
        }

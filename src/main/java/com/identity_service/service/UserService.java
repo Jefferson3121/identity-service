@@ -38,12 +38,10 @@ public class UserService {
 
     @Transactional
     public boolean deleteUser(int dni) {
-
-        if (userRepository.deleteByDni(dni) > 0){
-            return true;
+        int deleted = userRepository.deleteByDni(dni);
+        if (deleted == 0) {
+            throw new UserNotFoundException("No se encontró el usuario con DNI: " + dni);
         }
-
-        return false;
     }
 
 
