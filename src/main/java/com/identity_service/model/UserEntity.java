@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +27,6 @@ public class UserEntity implements UserDetails {
     @NotBlank(message = "No se ingreso el nombre")
     private String name;
 
-
     @NotNull(message = "No se ingreso el DNI")
     private Integer dni;
 
@@ -37,8 +35,6 @@ public class UserEntity implements UserDetails {
 
     @NotBlank(message = "NO se ingreso ninguna contraseña")
     private String password;
-
-
 
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "users_types")
@@ -54,7 +50,6 @@ public class UserEntity implements UserDetails {
         this.userType = UsersTypes.EMPLOYEE;
         this.stateLogin = false;
         this.enabled = false;
-
     }
 
 
@@ -82,7 +77,6 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -92,7 +86,6 @@ public class UserEntity implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 
     @Override
     public boolean isEnabled() {

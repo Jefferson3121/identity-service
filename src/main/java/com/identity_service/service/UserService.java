@@ -1,6 +1,9 @@
 package com.identity_service.service;
 
+import com.identity_service.dto.ChangeEmailRequestDTO;
+import com.identity_service.dto.ChangePasswordRequestDTO;
 import com.identity_service.dto.UserResponseDTO;
+import com.identity_service.exceptions.UserNotFoundException;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.model.UserEntity;
 import com.identity_service.repository.UserRepository;
@@ -37,51 +40,46 @@ public class UserService {
 
 
     @Transactional
-    public boolean deleteUser(int dni) {
+    public void deleteUser(int dni) {
         int deleted = userRepository.deleteByDni(dni);
         if (deleted == 0) {
             throw new UserNotFoundException("No se encontró el usuario con DNI: " + dni);
         }
     }
 
-
-
     @Transactional
-    public boolean changeEmail(String currentEmail, String newEmail,String password) {
+    public void changeEmail(ChangeEmailRequestDTO changeEmailRequestDTO) {
 
-        UserEntity userEntity = userRepository.findUserByEmail(currentEmail).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
+         UserEntity userEntity = userRepository.findUserByEmail(changeEmailRequestDTO.currentEmail())
+                .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-        if (!passwordEncoder.matches(password, userEntity.getPassword())){
+        if (!passwordEncoder.matches(changeEmailRequestDTO.password(), userEntity.getPassword())){
             throw new BadCredentialsException("Contraseña invalida");
         }
 
-        userEntity.setEmail(newEmail);
-        userRepository.save(userEntity);
-        return true;
+        userEntity.setEmail(changeEmailRequestDTO.newEmail());
     }
 
 
     @Transactional
-    public boolean changePassword(String email, String currentPasswor,String newPassword){
+    public void changePassword(ChangePasswordRequestDTO change){
+        UserEntity userEntity = userRepository.findUserByEmail(change.email())
+                .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
-        UserEntity userEntity = userRepository.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
-
-        if (!passwordEncoder.matches(currentPasswor, userEntity.getPassword())){
+        if (!passwordEncoder.matches(change.currentPasswor(), userEntity.getPassword())){
             throw new BadCredentialsException("Contraseña invalida");
         }
-
-        userEntity.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(userEntity);
-        return true;
+        userEntity.setPassword(passwordEncoder.encode(change.newPassword()));
     }
+
 
 
     @Transactional
     public void enableUser(String email){
 
-        UserEntity userEntity = userRepository.findUserByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
+        UserEntity userEntity = userRepository.findUserByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 
         userEntity.setEnabled(true);
-        userRepository.save(userEntity);
     }
 }

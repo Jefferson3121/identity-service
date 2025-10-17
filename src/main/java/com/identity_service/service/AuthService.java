@@ -38,6 +38,7 @@ public class AuthService {
         userEntity.setUserType(UsersTypes.ADMIN);
         String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(encodedPassword);
+        userEntity.setEnabled(true);
 
         try {
             userRepository.save(userEntity);

@@ -61,25 +61,17 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @PatchMapping("/change-email")
-    public ResponseEntity<String> changeEmail(@RequestBody ChangeEmailRequestDTO change){
-
-        if (userService.changeEmail(change.currentEmail(), change.newEmail(),change.password())){
-            return ResponseEntity.status(HttpStatus.OK).body("Email modificada correctamente");
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("No se pudo cambiar el email");
+    public ResponseEntity<String> changeEmail(@RequestBody ChangeEmailRequestDTO changeEmailRequestDTO){
+        userService.changeEmail(changeEmailRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body("Email modificada correctamente");
     }
-
 
     @PreAuthorize(("hasAnyRole('ADMIN', 'EMPLOYEE')"))
     @PatchMapping("/change-password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequestDTO change){
 
-        if (userService.changePassword(change.email(), change.currentPasswor(), change.newPassword())){
+        userService.changePassword(change);
             return ResponseEntity.status(HttpStatus.OK).body("La contraseña ha sido modifcada correctamente");
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("La contraseña no se modifico");
     }
 
     @PreAuthorize("hasRole('ADMIN')")
