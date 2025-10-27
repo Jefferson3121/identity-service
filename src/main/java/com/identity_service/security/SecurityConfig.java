@@ -59,8 +59,7 @@ public class SecurityConfig {
 
         //Rutas con acceso a la Api
         corsConfiguration.setAllowedOrigins(List.of(
-                "http://localhost:3000", // tu frontend local
-                "https://tudominio.com"   // (opcional) dominio real cuando subas el proyecto
+                "http://localhost:3000" // tu frontend local
                 ));
 
         corsConfiguration.setAllowedMethods(List.of("GET", "POTS", "PUT", "DELETE", "OPTIONS"));

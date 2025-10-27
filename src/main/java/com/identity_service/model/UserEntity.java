@@ -39,7 +39,9 @@ public class UserEntity implements UserDetails {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "users_types")
     private UsersTypes userType;
+
     private boolean stateLogin;
+
     private boolean enabled;
 
     public UserEntity(String name, int dni, String email, String password){

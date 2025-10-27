@@ -52,7 +52,7 @@ public class UserController {
 
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete/{dni}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer dni){
         userService.deleteUser(dni);
         return ResponseEntity.status(HttpStatus.OK).body("Usuario eliminado");
