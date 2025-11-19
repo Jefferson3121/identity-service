@@ -14,8 +14,25 @@ import java.util.Collection;
 import java.util.Collections;
 
 
+/**
+ * Entidad que representa a un usuario dentro del sistema de autenticación.
+ *
+ * Esta clase implementa la interfaz UserDetails de Spring Security, lo que permite
+ * que sus instancias sean reconocidas por el framework para gestionar la autenticación
+ * y autorización de usuarios.
+ *
+ * Contiene información básica del usuario como nombre, DNI, email y contraseña,
+ * además del tipo de usuario (userType), el estado de inicio de sesión (stateLogin)
+ * y si la cuenta está habilitada (enabled).
+ *
+ * El campo userType se utiliza para asignar roles mediante la interfaz GrantedAuthority,
+ * lo que determina los permisos del usuario dentro del sistema.
+ */
+
+
+
 @Entity
-@Table(name = " \"user\"")
+@Table(name = "\"user\"")
 @Getter @Setter @NoArgsConstructor
 public class UserEntity implements UserDetails {
 
@@ -40,8 +57,6 @@ public class UserEntity implements UserDetails {
     @Column(columnDefinition = "users_types")
     private UsersTypes userType;
 
-    private boolean stateLogin;
-
     private boolean enabled;
 
     public UserEntity(String name, int dni, String email, String password){
@@ -50,7 +65,6 @@ public class UserEntity implements UserDetails {
         this.email =email;
         this.password = password;
         this.userType = UsersTypes.EMPLOYEE;
-        this.stateLogin = false;
         this.enabled = false;
     }
 
@@ -77,7 +91,7 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         return true;
-    }
+    }//La cuenta nunca expira
 
     @Override
     public boolean isAccountNonLocked() {
@@ -87,7 +101,7 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    }
+    }//Las credenciales nunca expiran
 
     @Override
     public boolean isEnabled() {

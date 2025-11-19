@@ -61,7 +61,7 @@
 		</dependency>
 
 		<dependency>
-<!--			obliga a buscar su configuración en un servidor externo especial llamado Config Server-->
+			<!--			obliga a buscar su configuración en un servidor externo especial llamado Config Server-->
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
@@ -148,16 +148,6 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 		</dependency>
-
-
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.10.0</version>
-			<scope>test</scope>
-		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.mockito</groupId>

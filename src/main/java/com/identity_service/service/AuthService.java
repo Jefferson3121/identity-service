@@ -1,6 +1,9 @@
 package com.identity_service.service;
 
-import com.identity_service.dto.*;
+import com.identity_service.dto.request.LoginRequestDTO;
+import com.identity_service.dto.internal.TokenData;
+import com.identity_service.dto.request.UserRequestDTO;
+import com.identity_service.dto.response.TokenResponseDTO;
 import com.identity_service.exceptions.UserAlreadyExistsException;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.model.UserEntity;
@@ -42,7 +45,7 @@ public class AuthService {
 
         try {
             userRepository.save(userEntity);
-            return new TokenResponseDTO(tokenManager.generateToken(new RequestTokenDTO(userEntity.getId(), userEntity.getEmail(),userEntity.getUserType())));
+            return new TokenResponseDTO(tokenManager.generateToken(new TokenData(userEntity.getId(), userEntity.getEmail(),userEntity.getUserType())));
         } catch (DataIntegrityViolationException ex) {
             throw new UserAlreadyExistsException("Usuario ya registrado");
         }
@@ -63,7 +66,7 @@ public class AuthService {
    }
 
 
-    public RequestTokenDTO login(LoginRequestDTO loginRequestDTO) {
+    public TokenData login(LoginRequestDTO loginRequestDTO) {
 
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(
@@ -75,8 +78,8 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authResult);
 
         UserEntity user = (UserEntity) authResult.getPrincipal();
-        user.setStateLogin(true);
+        userRepository.save(user);
 
-        return new RequestTokenDTO(user.getId(), user.getEmail(),user.getUserType());
+        return new TokenData(user.getId(), user.getEmail(),user.getUserType());
     }
 }

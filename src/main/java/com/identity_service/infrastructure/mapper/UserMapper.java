@@ -1,7 +1,7 @@
 package com.identity_service.infrastructure.mapper;
 
-import com.identity_service.dto.UserRequestDTO;
-import com.identity_service.dto.UserResponseDTO;
+import com.identity_service.dto.request.UserRequestDTO;
+import com.identity_service.dto.response.UserResponseDTO;
 import com.identity_service.model.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

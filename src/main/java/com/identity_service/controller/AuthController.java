@@ -1,11 +1,8 @@
 package com.identity_service.controller;
 
-import com.identity_service.dto.LoginRequestDTO;
-import com.identity_service.dto.TokenResponseDTO;
-import com.identity_service.dto.UserRequestDTO;
-import com.identity_service.infrastructure.mapper.UserMapper;
-import com.identity_service.model.UserEntity;
-import com.identity_service.model.UsersTypes;
+import com.identity_service.dto.request.LoginRequestDTO;
+import com.identity_service.dto.response.TokenResponseDTO;
+import com.identity_service.dto.request.UserRequestDTO;
 import com.identity_service.service.AuthService;
 import com.identity_service.security.TokenManager;
 import jakarta.validation.Valid;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 
 @RestController

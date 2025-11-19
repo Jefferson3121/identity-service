@@ -1,8 +1,8 @@
 package com.identity_service.service;
 
-import com.identity_service.dto.ChangeEmailRequestDTO;
-import com.identity_service.dto.ChangePasswordRequestDTO;
-import com.identity_service.dto.UserResponseDTO;
+import com.identity_service.dto.request.ChangeEmailRequestDTO;
+import com.identity_service.dto.request.ChangedPasswordRequestDTO;
+import com.identity_service.dto.response.UserResponseDTO;
 import com.identity_service.exceptions.UserNotFoundException;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.model.UserEntity;
@@ -62,7 +62,7 @@ public class UserService {
 
 
     @Transactional
-    public void changePassword(ChangePasswordRequestDTO change){
+    public void changePassword(ChangedPasswordRequestDTO change){
         UserEntity userEntity = userRepository.findUserByEmail(change.email())
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
 

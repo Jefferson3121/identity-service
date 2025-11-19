@@ -1,12 +1,11 @@
 package com.identity_service.controller;
 
-import com.identity_service.dto.ChangeEmailRequestDTO;
-import com.identity_service.dto.ChangePasswordRequestDTO;
-import com.identity_service.dto.UserResponseDTO;
+import com.identity_service.dto.request.ChangeEmailRequestDTO;
+import com.identity_service.dto.request.ChangedPasswordRequestDTO;
+import com.identity_service.dto.response.UserResponseDTO;
 import com.identity_service.infrastructure.mapper.UserMapper;
 import com.identity_service.service.UserService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,7 +67,7 @@ public class UserController {
 
     @PreAuthorize(("hasAnyRole('ADMIN', 'EMPLOYEE')"))
     @PatchMapping("/change-password")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequestDTO change){
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangedPasswordRequestDTO change){
 
         userService.changePassword(change);
             return ResponseEntity.status(HttpStatus.OK).body("La contraseña ha sido modifcada correctamente");
